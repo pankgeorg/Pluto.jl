@@ -1,4 +1,4 @@
-import { html, useState, useEffect, useLayoutEffect, useRef } from "../imports/Preact.js"
+import { html, useState, useEffect } from "../imports/Preact.js"
 
 import { CellOutput } from "./CellOutput.js"
 import { CellInput } from "./CellInput.js"
@@ -178,7 +178,7 @@ export const Cell = ({
                     if (code_folded && cm_forced_focus != null) {
                         requests.fold_remote_cell(cell_id, false)
                     }
-                    on_change(new_code)
+                    on_change(cell_id, new_code)
                 }}
                 on_update_doc_query=${on_update_doc_query}
                 on_focus_neighbor=${on_focus_neighbor}
