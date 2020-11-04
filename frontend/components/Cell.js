@@ -4,6 +4,7 @@ import { CellOutput } from "./CellOutput.js"
 import { CellInput } from "./CellInput.js"
 import { RunArea } from "./RunArea.js"
 import { cl } from "../common/ClassTable.js"
+import { useUSecSinceTruthy } from "../imports/hooks.js"
 
 /**
  * @typedef {Object} CodeState
@@ -92,7 +93,7 @@ export const Cell = ({
 }) => {
     // cm_forced_focus is null, except when a line needs to be highlighted because it is part of a stack trace
     const [cm_forced_focus, set_cm_forced_focus] = useState(null)
-
+    const millisRunning = useUSecSinceTruthy(running);
     useEffect(() => {
         const focusListener = (e) => {
             if (e.detail.cell_id === cell_id) {
@@ -200,7 +201,7 @@ export const Cell = ({
                         }
                     }
                 }}
-                runtime=${runtime}
+                runtime=${millisRunning || runtime}
             />
             <button
                 onClick=${() => {
