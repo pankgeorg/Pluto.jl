@@ -1,4 +1,4 @@
-import { html, Component, useState, useEffect } from "../imports/Preact.js"
+import { html, Component, useState, useEffect, createContext } from "../imports/Preact.js"
 import immer from "../imports/immer.js"
 
 import { create_pluto_connection, resolvable_promise } from "../common/PlutoConnection.js"
@@ -151,6 +151,8 @@ let ExportBanner = ({ notebook, pluto_version, onClose, open }) => {
         </aside>
     `
 }
+
+export const EditorContext = createContext("editor")
 
 export class Editor extends Component {
     constructor() {
@@ -961,7 +963,7 @@ export class Editor extends Component {
 
     render() {
         let { export_menu_open } = this.state
-        return html`
+        return html`<${EditorContext.Provider} value=${this}>
             <${Scroller} active=${this.state.scroller} />
             <header className=${export_menu_open ? "show_export" : ""}>
                 <${ExportBanner}
@@ -1079,6 +1081,7 @@ export class Editor extends Component {
                     </form>
                 </div>
             </footer>
+        </${EditorContext.Provider}
         `
     }
 }

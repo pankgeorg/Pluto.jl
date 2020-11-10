@@ -1,5 +1,5 @@
-import { html, useState, useEffect, useLayoutEffect, useRef } from "../imports/Preact.js"
-
+import { html, useState, useEffect, useLayoutEffect, useRef, useContext } from "../imports/Preact.js"
+import { EditorContext } from "./Editor.js"
 import { CellOutput } from "./CellOutput.js"
 import { CellInput } from "./CellInput.js"
 import { RunArea, useMillisSinceTruthy } from "./RunArea.js"
@@ -112,7 +112,7 @@ export const Cell = ({
             window.removeEventListener("cell_focus", focusListener)
         }
     }, [])
-
+    const editorThis = useContext(EditorContext)
     const class_code_differs = remote_code.body !== local_code.body
     const class_code_folded = code_folded && cm_forced_focus == null
 
