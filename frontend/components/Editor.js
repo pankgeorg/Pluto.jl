@@ -20,8 +20,16 @@ import { offline_html } from "../common/OfflineHTMLExport.js"
 import { slice_utf8, length_utf8 } from "../common/UnicodeTools.js"
 import { has_ctrl_or_cmd_pressed, ctrl_or_cmd_name, is_mac_keyboard, in_textarea_or_input } from "../common/KeyboardShortcuts.js"
 import { handle_log } from "../common/Logging.js"
+import { createContext, useContext } from "../imports/Preact.js"
 
 const default_path = "..."
+
+const RequestsContext = createContext("requests")
+
+export const useRequestsContext = () => {
+    const requests = useContext(RequestsContext)
+    return requests
+}
 
 /**
  * Serialize an array of cells into a string form (similar to the .jl file).
@@ -962,7 +970,7 @@ export class Editor extends Component {
 
     render() {
         let { export_menu_open } = this.state
-        return html`
+        return html`<${RequestsContext.Provider} value=${this.requests}>
             <${Scroller} active=${this.state.scroller} />
             <header className=${export_menu_open ? "show_export" : ""}>
                 <${ExportBanner}
@@ -1027,7 +1035,6 @@ export class Editor extends Component {
                     focus_after_creation=${!this.state.loading}
                     all_completed_promise=${this.all_completed_promise}
                     selected_friends=${this.selected_friends}
-                    requests=${this.requests}
                     client=${this.client}
                 />
 
@@ -1080,6 +1087,7 @@ export class Editor extends Component {
                     </form>
                 </div>
             </footer>
+        </${RequestsContext.Provider}
         `
     }
 }

@@ -4,6 +4,7 @@ import { CellOutput } from "./CellOutput.js"
 import { CellInput } from "./CellInput.js"
 import { RunArea, useMillisSinceTruthy } from "./RunArea.js"
 import { cl } from "../common/ClassTable.js"
+import { useRequestsContext } from "./Editor.js"
 
 /**
  * @typedef {Object} CodeState
@@ -86,12 +87,12 @@ export const Cell = ({
     scroll_into_view_after_creation,
     all_completed_promise,
     selected_friends,
-    requests,
     client,
     notebook_id,
 }) => {
     // cm_forced_focus is null, except when a line needs to be highlighted because it is part of a stack trace
     const [cm_forced_focus, set_cm_forced_focus] = useState(null)
+    const requests = useRequestsContext()
     const localTimeRunning = 10e5 * useMillisSinceTruthy(running)
     useEffect(() => {
         const focusListener = (e) => {
@@ -153,7 +154,7 @@ export const Cell = ({
             >
                 <span></span>
             </button>
-            <${CellOutput} ...${output} all_completed_promise=${all_completed_promise} requests=${requests} cell_id=${cell_id} />
+            <${CellOutput} ...${output} all_completed_promise=${all_completed_promise} cell_id=${cell_id} />
             ${show_input &&
             html`<${CellInput}
                 local_code=${local_code}

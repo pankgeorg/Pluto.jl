@@ -1,5 +1,5 @@
-import { html, useEffect, useRef } from "../imports/Preact.js"
-
+import { html, useEffect } from "../imports/Preact.js"
+import { useRequestsContext } from "./Editor.js"
 import { Cell } from "./Cell.js"
 
 export const Notebook = ({
@@ -12,12 +12,12 @@ export const Notebook = ({
     focus_after_creation,
     all_completed_promise,
     selected_friends,
-    requests,
     client,
     notebook_id,
 }) => {
     // This might look kinda silly...
     // and it is... but it covers all the cases... - DRAL
+    const requests = useRequestsContext()
     useEffect(() => {
         if (cells.length === 0 && !is_loading) {
             requests.add_remote_cell_at(0)
@@ -38,7 +38,6 @@ export const Notebook = ({
                     scroll_into_view_after_creation=${d.pasted}
                     all_completed_promise=${all_completed_promise}
                     selected_friends=${selected_friends}
-                    requests=${requests}
                     client=${client}
                     notebook_id=${notebook_id}
                 />`

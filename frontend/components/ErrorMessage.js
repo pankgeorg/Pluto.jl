@@ -1,4 +1,5 @@
 import { html } from "../imports/Preact.js"
+import { useRequestsContext } from "./Editor.js"
 
 const StackFrameFilename = ({ frame, cell_id }) => {
     const sep_index = frame.file.indexOf("#==#")
@@ -35,7 +36,8 @@ const Funccall = ({ frame }) => {
     }
 }
 
-export const ErrorMessage = ({ msg, stacktrace, cell_id, requests }) => {
+export const ErrorMessage = ({ msg, stacktrace, cell_id }) => {
+    const requests = useRequestsContext()
     const rewriters = [
         {
             pattern: /syntax: extra token after end of expression/,
