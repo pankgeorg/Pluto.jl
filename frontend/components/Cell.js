@@ -201,6 +201,7 @@ export const Cell = ({
                     }
                 }}
                 runtime=${localTimeRunning || runtime}
+                cell_id=${cell_id}
             />
             <button
                 onClick=${() => {

@@ -1,8 +1,9 @@
 import { html, useEffect, useState } from "../imports/Preact.js"
 
-export const RunArea = ({ runtime, onClick }) => {
+export const RunArea = ({ runtime, onClick, cell_id }) => {
     return html`
         <pluto-runarea>
+            <a href="#${cell_id}"><span></span></a>
             <button onClick=${onClick} class="runcell" title="Run"><span></span></button>
             <span class="runtime">${prettytime(runtime)}</span>
         </pluto-runarea>

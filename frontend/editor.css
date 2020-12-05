@@ -1112,7 +1112,7 @@ pluto-runarea {
     height: 17px;
     position: absolute;
     right: 0px;
-    min-width: 75px;
+    min-width: calc(75px + 17px);
     background-color: hsl(0, 0%, 97%);
     /* border: 2px solid hsla(0, 0%, 0%, 0.1); */
     border-bottom-left-radius: 5px;
@@ -1137,6 +1137,23 @@ pluto-runarea > span {
 pluto-runarea > button.runcell {
     top: -1px;
     left: 1px;
+}
+
+pluto-runarea > a {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: -20px;
+    opacity: 0.2;
+}
+
+pluto-runarea > a > span::after {
+    background-image: url(https://cdn.jsdelivr.net/gh/ionic-team/ionicons@5.0.0/src/svg/link-outline.svg);
+    display: block;
+    content: " " !important;
+    background-size: 17px 17px;
+    height: 17px;
+    width: 17px;
 }
 
 pluto-runarea > button.runcell > span::after {

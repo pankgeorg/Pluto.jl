@@ -12,7 +12,7 @@ import { SelectionArea } from "./SelectionArea.js"
 import { UndoDelete } from "./UndoDelete.js"
 import { SlideControls } from "./SlideControls.js"
 import { Scroller } from "./Scroller.js"
-
+import { FullScreen } from "./FullScreen.js"
 import { link_open_path } from "./Welcome.js"
 import { empty_cell_data, code_differs } from "./Cell.js"
 
@@ -993,6 +993,7 @@ export class Editor extends Component {
             </header>
             <main>
                 <preamble>
+                    <${FullScreen} />
                     <button onClick=${() => this.requests.set_and_run_all_changed_remote_cells()} class="runallchanged" title="Save and run all changed cells">
                         <span></span>
                     </button>
