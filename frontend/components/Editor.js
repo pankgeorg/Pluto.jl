@@ -229,7 +229,8 @@ export class Editor extends Component {
             desired_doc_query: null,
             recently_deleted: /** @type {Array<{ index: number, cell: CellData }>} */ (null),
             connected: false,
-            loading: true,
+            initializing: true,
+            moving_file: false,
             scroller: {
                 up: false,
                 down: false,
@@ -587,7 +588,7 @@ export class Editor extends Component {
             this.client.send("get_all_notebooks", {}, {}).then(on_remote_notebooks)
 
             this.client.send("update_notebook", { updates: [] }, { notebook_id: this.state.notebook.notebook_id }, false).then(() => {
-                this.setState({ loading: false })
+                this.setState({ initializing: false })
             })
 
             // do one autocomplete to trigger its precompilation
@@ -619,8 +620,8 @@ export class Editor extends Component {
         console.log("asdf")
         /** @param {(notebook: NotebookData) => void} mutate_fn */
         let update_notebook = async (mutate_fn) => {
-            // if (this.state.loading) {
-            //     console.error("Update notebook done during loading, strange")
+            // if (this.state.initializing) {
+            //     console.error("Update notebook done during initializing, strange")
             //     return
             // }
 
@@ -691,7 +692,7 @@ export class Editor extends Component {
                 }
             }
 
-            this.setState({ loading: true })
+            this.setState({ moving_file: true })
 
             try {
                 await update_notebook((notebook) => {
@@ -702,7 +703,7 @@ export class Editor extends Component {
             } catch (error) {
                 alert("Failed to move file:\n\n" + error.message)
             } finally {
-                this.setState({ loading: false })
+                this.setState({ moving_file: false })
             }
         }
 
@@ -850,7 +851,7 @@ export class Editor extends Component {
             (cell_id) => this.state.cells_local[cell_id] != null && this.state.notebook.cell_dict[cell_id].code !== this.state.cells_local[cell_id].code
         )
         document.body.classList.toggle("code_differs", any_code_differs)
-        document.body.classList.toggle("loading", this.state.loading)
+        document.body.classList.toggle("loading", this.state.initializing || this.state.moving_file)
         if (this.state.connected) {
             // @ts-ignore
             document.querySelector("meta[name=theme-color]").content = "#fff"
@@ -917,7 +918,7 @@ export class Editor extends Component {
                             </button>
                         </preamble>
                         <${Notebook}
-                            is_loading=${this.state.loading}
+                            is_initializing=${this.state.initializing}
                             notebook=${this.state.notebook}
                             selected_cells=${this.state.selected_cells}
                             cells_local=${this.state.cells_local}
