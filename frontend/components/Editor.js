@@ -14,10 +14,8 @@ import { SelectionArea } from "./SelectionArea.js"
 import { UndoDelete } from "./UndoDelete.js"
 import { SlideControls } from "./SlideControls.js"
 import { Scroller } from "./Scroller.js"
+import { ExportBanner } from "./ExportBanner.js"
 
-import { link_open_path } from "./Welcome.js"
-
-import { offline_html } from "../common/OfflineHTMLExport.js"
 import { slice_utf8, length_utf8 } from "../common/UnicodeTools.js"
 import { has_ctrl_or_cmd_pressed, ctrl_or_cmd_name, is_mac_keyboard, in_textarea_or_input } from "../common/KeyboardShortcuts.js"
 import { handle_log } from "../common/Logging.js"
@@ -25,6 +23,10 @@ import { PlutoContext, PlutoBondsContext } from "../common/PlutoContext.js"
 
 const default_path = "..."
 const DEBUG_DIFFING = false
+
+/**
+ * @typedef {import('../imports/immer').Patch} Patch
+ * */
 
 /**
  * Serialize an array of cells into a string form (similar to the .jl file).
@@ -40,10 +42,6 @@ function serialize_cells(cells) {
 }
 
 /**
- * @typedef {import('../imports/immer').Patch} Patch
- * */
-
-/**
  * Deserialize a Julia program or output from `serialize_cells`.
  *
  * If a Julia program, it will return a single String containing it. Otherwise,
@@ -57,6 +55,7 @@ function deserialize_cells(serialized_cells) {
     return segments.map((s) => s.trim()).filter((s) => s !== "")
 }
 
+<<<<<<< HEAD
 const Circle = ({ fill }) => html`
     <svg
         width="48"
@@ -167,6 +166,8 @@ let ExportBanner = ({ notebook, pluto_version, onClose, open }) => {
     `
 }
 
+=======
+>>>>>>> move exportbanner to its own file
 /**
  * @typedef CellData
  * @type {{
