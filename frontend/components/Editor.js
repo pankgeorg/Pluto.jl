@@ -225,6 +225,15 @@ export class Editor extends Component {
                 cells_running: {},
                 cell_order: [],
             }),
+            static_notebook: /** @type {NotebookData} */ ({
+                notebook_id: new URLSearchParams(window.location.search).get("id"),
+                path: default_path,
+                shortpath: "",
+                in_temp_dir: true,
+                cell_dict: {},
+                cells_running: {},
+                cell_order: [],
+            }),
             cells_local: /** @type {{ [id: string]: CellData }} */ ({}),
             desired_doc_query: null,
             recently_deleted: /** @type {Array<{ index: number, cell: CellData }>} */ (null),
@@ -844,6 +853,15 @@ export class Editor extends Component {
                 this.counter_statistics = create_counter_statistics()
             }, 10 * 60 * 1000) // 10 minutes - statistics interval
         }, 20 * 1000) // 20 seconds - load feedback a little later for snappier UI
+
+        const get_static_state = async () => {
+            const response = await fetch("https://mkhj.fra1.cdn.digitaloceanspaces.com/hanoi_sate_2.json")
+            const state = await response.json()
+            this.setState({
+                static_notebook: state,
+            })
+        }
+        get_static_state()
     }
 
     componentDidUpdate() {
@@ -875,6 +893,8 @@ export class Editor extends Component {
 
     render() {
         let { export_menu_open } = this.state
+
+        window.notebook_state = this.state.notebook
 
         return html`
             <${PlutoContext.Provider} value=${this.actions}>
@@ -921,7 +941,7 @@ export class Editor extends Component {
                         </preamble>
                         <${Notebook}
                             is_initializing=${this.state.initializing}
-                            notebook=${this.state.notebook}
+                            notebook=${this.state.initializing ? this.state.static_notebook : this.state.notebook}
                             selected_cells=${this.state.selected_cells}
                             cells_local=${this.state.cells_local}
                             on_update_doc_query=${this.actions.set_doc_query}
