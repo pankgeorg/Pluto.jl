@@ -855,7 +855,9 @@ export class Editor extends Component {
         }, 20 * 1000) // 20 seconds - load feedback a little later for snappier UI
 
         const get_static_state = async () => {
-            const response = await fetch("https://mkhj.fra1.cdn.digitaloceanspaces.com/hanoi_sate_2.json")
+            const state_snapshot_url = new URLSearchParams(window.location.search).get("stateSnapshot")
+            console.log("fetching", state_snapshot_url)
+            const response = await fetch(state_snapshot_url)
             const state = await response.json()
             this.setState({
                 static_notebook: state,
