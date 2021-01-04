@@ -1,0 +1,15 @@
+spec:
+  name: pluto-do
+  services:
+  - dockerfile_path: Dockerfile
+    github:
+      branch: master
+      deploy_on_push: true
+      repo: pankgeorg/Pluto.jl
+    http_port: 1234
+    instance_count: 1
+    instance_size_slug: basic-m
+    name: pluto-do
+    routes:
+    - path: /
+    run_command: julia /home/pluto/startup.jl
