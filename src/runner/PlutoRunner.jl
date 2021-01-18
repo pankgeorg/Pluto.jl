@@ -460,7 +460,7 @@ The MIMEs that Pluto supports, in order of how much I like them.
 
 `text/plain` should always match - the difference between `show(::IO, ::MIME"text/plain", x)` and `show(::IO, x)` is an unsolved mystery.
 """
-const allmimes = [MIME"application/vnd.pluto.table+object"(); MIME"text/html"(); imagemimes; MIME"application/vnd.pluto.tree+object"(); MIME"text/latex"(); MIME"text/plain"()]
+const allmimes = [MIME"application/vnd.pluto+object"(); MIME"application/vnd.pluto.table+object"(); MIME"text/html"(); imagemimes; MIME"application/vnd.pluto.tree+object"(); MIME"text/latex"(); MIME"text/plain"()]
 
 
 """
@@ -591,7 +591,11 @@ function show_richest(io::IO, @nospecialize(x))::Tuple{<:Any,MIME}
         end
     end
 
-    if mime isa MIME"text/plain" && use_tree_viewer_for_struct(x)
+    # Someone wants to override Pluto Internals. Let them?
+    if mime isa MIME"application/vnd.pluto+object"
+        show(io, mime, x)
+        nothing, mime
+    elseif mime isa MIME"text/plain" && use_tree_viewer_for_struct(x)
         tree_data(x, io), MIME"application/vnd.pluto.tree+object"()
     elseif mime isa MIME"application/vnd.pluto.tree+object"
         tree_data(x, IOContext(io, :compact => true)), mime
