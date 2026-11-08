@@ -1,0 +1,38 @@
+# Lint Pluto's Julia code with eslint-plugin-julia and upload the results to code scanning.
+name: eslint-julia
+
+on:
+  push:
+    branches: [eslint-julia]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write   # upload SARIF to code scanning
+
+jobs:
+  eslint-julia:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Module resolution reads Manifest.toml + the depot to know what `using Dep` brings in.
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.11'
+      - name: Instantiate the Julia environment (no precompilation)
+        env:
+          JULIA_PKG_PRECOMPILE_AUTO: '0'
+        run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
+      - name: Install ESLint and eslint-plugin-julia
+        run: npm ci --no-audit --no-fund
+      - name: Lint (stylish output in the log)
+        run: npx eslint '**/*.jl' || true
+      - name: Lint (SARIF)
+        run: npx eslint '**/*.jl' --format @microsoft/eslint-formatter-sarif --output-file eslint-julia.sarif || true
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: eslint-julia.sarif
+          category: eslint-julia
