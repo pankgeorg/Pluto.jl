@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "description": "Lint Pluto's Julia code with eslint-plugin-julia (JuliaSyntax compiled to WebAssembly)",
+  "type": "module",
+  "scripts": {
+    "lint:julia": "eslint '**/*.jl'"
+  },
+  "devDependencies": {
+    "@microsoft/eslint-formatter-sarif": "^3.1.0",
+    "eslint": "^10.14.0",
+    "eslint-plugin-julia": "git+https://github.com/pankgeorg/eslint-plugin-julia.git#7c11a07"
+  }
+}
