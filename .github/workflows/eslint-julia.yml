@@ -1,5 +1,6 @@
-# Lint Pluto's Julia code with eslint-plugin-julia and upload the results to code scanning.
-name: eslint-julia
+# The workflow from eslint-plugin-julia's docs/usage.md, unchanged except for the trigger
+# (this fork only lints its eslint-julia branch). It tests that the documented snippet works.
+name: Lint Julia
 
 on:
   push:
@@ -8,31 +9,39 @@ on:
 
 permissions:
   contents: read
-  security-events: write   # upload SARIF to code scanning
 
 jobs:
   eslint-julia:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # for the SARIF upload below
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
-      # Module resolution reads Manifest.toml + the depot to know what `using Dep` brings in.
-      - uses: julia-actions/setup-julia@v2
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Optional: only needed for no-undef / no-unused-vars / no-undefined-exports, which
+      # read Manifest.toml and the depot to know what `using SomePackage` brings in.
+      - uses: julia-actions/setup-julia@v3
         with:
-          version: '1.11'
-      - name: Instantiate the Julia environment (no precompilation)
+          version: '1'
+      - run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
         env:
           JULIA_PKG_PRECOMPILE_AUTO: '0'
-        run: julia --project=. -e 'using Pkg; Pkg.instantiate()'
-      - name: Install ESLint and eslint-plugin-julia
-        run: npm ci --no-audit --no-fund
-      - name: Lint (stylish output in the log)
-        run: npx eslint '**/*.jl' || true
-      - name: Lint (SARIF)
-        run: npx eslint '**/*.jl' --format @microsoft/eslint-formatter-sarif --output-file eslint-julia.sarif || true
-      - uses: github/codeql-action/upload-sarif@v3
+
+      # Code scanning: findings appear in the Security tab and inline on pull requests.
+      # Free for public repositories; private ones need GitHub Advanced Security.
+      # Without it, delete these two steps (and the security-events permission).
+      - run: npx eslint '**/*.jl' --format @microsoft/eslint-formatter-sarif --output-file eslint-julia.sarif || true
+      - uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: eslint-julia.sarif
           category: eslint-julia
+
+      # Fails the build on errors. setup-node's built-in problem matcher turns this
+      # output into annotations on the pull request, in any repository.
+      - run: npx eslint '**/*.jl'
