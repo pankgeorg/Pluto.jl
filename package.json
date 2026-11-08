@@ -8,6 +8,6 @@
   "devDependencies": {
     "@microsoft/eslint-formatter-sarif": "^3.1.0",
     "eslint": "^10.14.0",
-    "eslint-plugin-julia": "git+https://github.com/pankgeorg/eslint-plugin-julia.git#7c11a07"
+    "eslint-plugin-julia": "git+https://github.com/pankgeorg/eslint-plugin-julia.git#0efa29d"
   }
 }
